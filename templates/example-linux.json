@@ -82,7 +82,7 @@
       "tag": "default",
       "outbounds": [
         "\u003call-proxy-tags\u003e",
-        "\u003c-all-country-tags\u003e",
+        "\u003call-country-tags\u003e",
         "direct"
       ]
     },
