@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"sort"
 	"strings"
 
@@ -34,6 +35,7 @@ func Convert(
 	groupType string,
 	sortKey string,
 	sortType string,
+	groupRules map[string][]string,
 ) (string, error) {
 	result := ""
 	var err error
@@ -99,7 +101,7 @@ func Convert(
 	}
 
 	if enableGroup {
-		outbounds = AddCountryGroup(outbounds, groupType, sortKey, sortType)
+		outbounds = AddCountryGroup(outbounds, groupType, sortKey, sortType, groupRules)
 	}
 	if templatePath != "" {
 		templateData, err := ReadTemplate(templatePath)
@@ -114,7 +116,7 @@ func Convert(
 			}
 		}
 		if !enableGroup && (reg.MatchString(templateData) || strings.Contains(templateData, constant.AllCountryTags) || group) {
-			outbounds = AddCountryGroup(outbounds, groupType, sortKey, sortType)
+			outbounds = AddCountryGroup(outbounds, groupType, sortKey, sortType, groupRules)
 		}
 		var template model.Options
 		if template, err = J.UnmarshalExtendedContext[model.Options](globalCtx, []byte(templateData)); err != nil {
@@ -129,7 +131,7 @@ func Convert(
 		for _, v := range template.Options.Endpoints {
 			template.Endpoints = append(template.Endpoints, (model.Endpoint)(v))
 		}
-		result, err = MergeTemplate(outbounds, &template)
+		result, err = MergeTemplate(outbounds, &template, groupRules)
 		if err != nil {
 			return "", err
 		}
@@ -151,11 +153,25 @@ func Convert(
 	return string(result), nil
 }
 
-func AddCountryGroup(proxies []model.Outbound, groupType string, sortKey string, sortType string) []model.Outbound {
+func AddCountryGroup(proxies []model.Outbound, groupType string, sortKey string, sortType string, groupRules map[string][]string) []model.Outbound {
 	newGroup := make(map[string]model.Outbound)
+	groupRulesRegexps := make(map[string][]*regexp.Regexp)
+	for k, v := range groupRules {
+		for _, rule := range v {
+			groupRulesRegexps[k] = append(groupRulesRegexps[k], regexp.MustCompile(rule))
+		}
+	}
 	for _, p := range proxies {
 		if p.Type != C.TypeSelector && p.Type != C.TypeURLTest {
 			country := model.GetContryName(p.Tag)
+			for k, rules := range groupRulesRegexps {
+				for _, rule := range rules {
+					if rule.MatchString(p.Tag) {
+						country = k
+						break
+					}
+				}
+			}
 			if group, ok := newGroup[country]; ok {
 				AppendOutbound(&group, p.Tag)
 				newGroup[country] = group
@@ -235,13 +251,17 @@ func ReadTemplate(template string) (string, error) {
 	}
 }
 
-func MergeTemplate(outbounds []model.Outbound, template *model.Options) (string, error) {
+func MergeTemplate(outbounds []model.Outbound, template *model.Options, groupRules map[string][]string) (string, error) {
 	var err error
 	proxyTags := make([]string, 0)
 	groupTags := make([]string, 0)
 	groups := make(map[string]model.Outbound)
+	rulesKeys := make([]string, 0)
+	for k := range groupRules {
+		rulesKeys = append(rulesKeys, k)
+	}
 	for _, p := range outbounds {
-		if model.IsCountryGroup(p.Tag) {
+		if slices.Contains(rulesKeys, p.Tag) || model.IsCountryGroup(p.Tag) {
 			groupTags = append(groupTags, p.Tag)
 			reg := regexp.MustCompile("[A-Za-z]{2}")
 			country := reg.FindString(p.Tag)

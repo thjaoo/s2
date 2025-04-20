@@ -39,6 +39,13 @@ func Convert(c *gin.Context) {
 		})
 		return
 	}
+	groupRules := make(map[string][]string)
+	err = json.Unmarshal([]byte(data.GroupRules), &groupRules)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+	}
 	result, err := common.Convert(
 		data.Subscriptions,
 		data.Proxies,
@@ -49,6 +56,7 @@ func Convert(c *gin.Context) {
 		data.GroupType,
 		data.SortKey,
 		data.SortType,
+		groupRules,
 	)
 	if err != nil {
 		c.JSON(400, gin.H{

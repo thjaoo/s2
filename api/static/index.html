@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="mdui-theme-auto">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,9 +17,11 @@
     body {
       font-family: "Roboto", "Noto Sans SC", sans-serif;
     }
+
     h3 {
       margin-top: 0;
     }
+
     .section {
       margin: 20px 0;
       padding: 15px;
@@ -26,19 +29,23 @@
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       background-color: rgb(var(--mdui-color-surface-container));
     }
-    .section > * {
+
+    .section>* {
       margin-bottom: 10px;
     }
+
     .mdui-container {
       border-radius: 10px;
       max-width: 1200px;
       margin: 30px auto;
     }
+
     .header-controls {
       display: flex;
       gap: 10px;
       align-items: center;
     }
+
     /* Rename fields: now stacked in a wide layout */
     .rename-group {
       display: flex;
@@ -47,6 +54,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="mdui-container">
     <div style="display: flex; align-items: center; justify-content: space-between;">
@@ -89,24 +97,20 @@
       <div class="section">
         <h3 data-i18n="nodes">Nodes</h3>
         <div>
-          <mdui-text-field autosize min-rows="3" max-rows="5" data-i18n="subscription-link" 
-            data-i18n-placeholder="one-per-line" 
-            label="Subscription Link" type="text" id="subscription" name="subscription" 
+          <mdui-text-field autosize min-rows="3" max-rows="5" data-i18n="subscription-link"
+            data-i18n-placeholder="one-per-line" label="Subscription Link" type="text" id="subscription"
+            name="subscription" placeholder="One per line">
+          </mdui-text-field>
+        </div>
+        <div>
+          <mdui-text-field autosize min-rows="3" max-rows="5" data-i18n="proxy-link"
+            data-i18n-placeholder="one-per-line" label="Node Share Link" type="text" id="proxy" name="proxy"
             placeholder="One per line">
           </mdui-text-field>
         </div>
         <div>
-          <mdui-text-field autosize min-rows="3" max-rows="5" data-i18n="proxy-link" 
-            data-i18n-placeholder="one-per-line" 
-            label="Node Share Link" type="text" id="proxy" name="proxy"
-            placeholder="One per line">
-          </mdui-text-field>
-        </div>
-        <div>
-          <mdui-text-field data-i18n="delete-node" 
-            data-i18n-placeholder="supports-regex" 
-            label="Delete Node" type="text" id="delete" name="delete"
-            placeholder="Supports regex">
+          <mdui-text-field data-i18n="delete-node" data-i18n-placeholder="supports-regex" label="Delete Node"
+            type="text" id="delete" name="delete" placeholder="Supports regex">
           </mdui-text-field>
         </div>
         <div>
@@ -123,8 +127,11 @@
       <div class="section">
         <h3 data-i18n="policy-group">Policy Group</h3>
         <div>
-          <mdui-text-field data-i18n="type" label="Type" type="text" id="group-type" name="group-type" 
-            value="selector">
+          <mdui-checkbox data-i18n="group" label="Group" name="group" id="group"
+            value="true">placeholder</mdui-checkbox>
+        </div>
+        <div>
+          <mdui-text-field data-i18n="type" label="Type" type="text" id="group-type" name="group-type" value="selector">
           </mdui-text-field>
         </div>
         <div>
@@ -138,6 +145,11 @@
             <mdui-menu-item value="asc" selected data-i18n="ascending">Ascending</mdui-menu-item>
             <mdui-menu-item value="desc" data-i18n="descending">Descending</mdui-menu-item>
           </mdui-select>
+        </div>
+        <div>
+          <mdui-text-field autosize data-i18n="group-rules" label="Group Rules" type="text" id="group-rules"
+            name="group-rules" min-rows="3" max-rows="5" data-i18n-placeholder="group-rules-placeholder">
+          </mdui-text-field>
         </div>
       </div>
       <!-- Result Section -->
@@ -176,7 +188,10 @@
         "theme-auto": "跟随系统",
         "import-profile": "导入配置",
         "one-per-line": "一行一个",
-        "supports-regex": "支持正则表达式"
+        "supports-regex": "支持正则表达式",
+        "group-rules": "策略组规则",
+        "group-rules-placeholder": "Json格式: {\"US\": [\"US-CA\", \"US-TX\"], \"CN\": [\"CN-BJ\", \"CN-SH\"]}, 支持正则表达式",
+        "group": "启用策略组"
       },
       "en": {
         "template": "Template",
@@ -199,7 +214,10 @@
         "theme-auto": "Auto",
         "import-profile": "Import Profile",
         "one-per-line": "One per line",
-        "supports-regex": "Supports regex"
+        "supports-regex": "Supports regex",
+        "group-rules": "Group Rules",
+        "group-rules-placeholder": "Json format: {\"US\": [\"US-CA\", \"US-TX\"], \"CN\": [\"CN-BJ\", \"CN-SH\"]}, support regex",
+        "group": "Enable Policy Group"
       },
       "ru": {
         "template": "Шаблон",
@@ -222,11 +240,14 @@
         "theme-auto": "Системная",
         "import-profile": "Импортировать профиль",
         "one-per-line": "Одна на строку",
-        "supports-regex": "Поддерживает рег. выражения"
+        "supports-regex": "Поддерживает рег. выражения",
+        "group-rules": "Группа правил",
+        "group-rules-placeholder": "Формат JSON: {\"US\": [\"US-CA\", \"US-TX\"], \"CN\": [\"CN-BJ\", \"CN-SH\"]}, поддержка регулярных выражений",
+        "group": "Включить группу политик"
       }
     };
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       setupLanguage();
       setupTheme();
       listenInput();
@@ -242,7 +263,7 @@
         languageMenu.value = savedLang;
         changeLanguage(savedLang);
 
-        languageMenu.addEventListener('change', function() {
+        languageMenu.addEventListener('change', function () {
           changeLanguage(languageMenu.value);
         });
       }
@@ -257,8 +278,10 @@
         const translation = translations[lang][key];
         if (translation) {
           if (element.tagName.toLowerCase() === 'mdui-text-field' ||
-              element.tagName.toLowerCase() === 'mdui-select') {
+            element.tagName.toLowerCase() === 'mdui-select') {
             element.setAttribute('label', translation);
+          } else if (element.tagName.toLowerCase() === 'mdui-checkbox') {
+            element.innerHTML = translation;
           } else {
             element.textContent = translation;
           }
@@ -279,7 +302,7 @@
       document.documentElement.className = "mdui-theme-" + savedTheme;
       themeMenu.value = savedTheme;
 
-      themeMenu.addEventListener("change", function() {
+      themeMenu.addEventListener("change", function () {
         const newTheme = themeMenu.value;
         document.documentElement.className = "mdui-theme-" + newTheme;
         localStorage.setItem("theme", newTheme);
@@ -344,14 +367,16 @@
       const groupType = document.getElementById("group-type").value;
       const sort = document.getElementById("sort").value;
       const sortType = document.getElementById("sort-type").value;
-      
+      const groupRules = document.getElementById("group-rules").value;
+      const group = document.getElementById("group").value;
+
       let rename = {};
       for (let i = 0; i < renameFrom.length; i++) {
         if (renameFrom[i] && renameTo[i]) {
           rename[renameFrom[i]] = renameTo[i];
         }
       }
-      
+
       // Only generate link if there is some user input (subscription, proxy, delete, or rename)
       if (
         subscription.length === 0 &&
@@ -362,15 +387,15 @@
         output.value = "";
         return;
       }
-      
+
       // Determine base URL using window.location.origin and window.location.pathname
       let basePath = window.location.pathname;
       // Remove trailing slash if exists
-      if(basePath.endsWith('/')){
+      if (basePath.endsWith('/')) {
         basePath = basePath.slice(0, -1);
       }
       const baseURL = window.location.origin + basePath;
-      
+
       const data = {
         subscription,
         proxy,
@@ -379,17 +404,11 @@
         rename,
         "group-type": groupType,
         sort,
-        "sort-type": sortType
+        "sort-type": sortType,
+        "group-rules": groupRules,
+        group: group === "true"
       };
-      output.value = baseURL + "/convert?data=" + encodeBase64(JSON.stringify(data));
-    }
-
-    function encodeBase64(str) {
-      return btoa(
-        encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
-          return String.fromCharCode("0x" + p1);
-        })
-      ).replace(/\+/g, "-").replace(/\//g, "_");
+      output.value = baseURL + "/convert?data=" + btoa(unescape(encodeURIComponent(JSON.stringify(data)))).replace(/\+/g, "-").replace(/\//g, "_");
     }
 
     function openProfileLink() {
@@ -418,4 +437,5 @@
     }
   </script>
 </body>
+
 </html>

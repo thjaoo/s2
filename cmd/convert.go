@@ -24,6 +24,7 @@ var (
 	sortKey       string
 	sortType      string
 	config        string
+	groupRules    string
 )
 
 func init() {
@@ -38,6 +39,7 @@ func init() {
 	convertCmd.Flags().StringVarP(&sortKey, "sort", "S", "", "sort key, tag or num")
 	convertCmd.Flags().StringVarP(&sortType, "sort-type", "T", "", "sort type, asc or desc")
 	convertCmd.Flags().StringVarP(&config, "config", "c", "", "configuration file path")
+	convertCmd.Flags().StringVarP(&groupRules, "group-rules", "R", "", "group rules")
 	RootCmd.AddCommand(convertCmd)
 }
 
@@ -50,6 +52,14 @@ var convertCmd = &cobra.Command{
 
 func convertRun(cmd *cobra.Command, args []string) {
 	loadConfig()
+	groupRulesMap := make(map[string][]string)
+	if groupRules != "" {
+		err := json.Unmarshal([]byte(groupRules), &groupRulesMap)
+		if err != nil {
+			fmt.Println("Error parsing group rules:", err)
+			return
+		}
+	}
 	result, err := common.Convert(
 		subscriptions,
 		proxies,
@@ -60,6 +70,7 @@ func convertRun(cmd *cobra.Command, args []string) {
 		groupType,
 		sortKey,
 		sortType,
+		groupRulesMap,
 	)
 	if err != nil {
 		fmt.Println("Conversion error:", err)
