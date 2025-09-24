@@ -62,8 +62,18 @@
   "ntp": {
     "enabled": true,
     "interval": "30m0s",
-    "server": "ntp.aliyun.com",
-    "server_port": 123
+    "servers": [
+      {
+        "address": "ntp.aliyun.com",
+        "port": 123,
+        "detour": "direct"
+      },
+      {
+        "address": "time.google.com",
+        "port": 123,
+        "detour": "default"
+      }
+    ]
   },
   "inbounds": [
     {
@@ -71,7 +81,6 @@
       "address": ["172.16.0.1/30", "fdfe:dcba:9876::1/126"],
       "auto_route": true,
       "strict_route": true,
-      "exclude_interface": "tailscale0",
       "sniff": true
     }
   ],
@@ -80,8 +89,8 @@
       "type": "selector",
       "tag": "default",
       "outbounds": [
-        "\u003call-proxy-tags\u003e",
-        "\u003call-country-tags\u003e",
+        "<all-proxy-tags>",
+        "<all-country-tags>",
         "direct"
       ]
     },
@@ -148,14 +157,14 @@
         "tag": "geosite-category-ads-all",
         "format": "binary",
         "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
-        "download_detour": "default"
+        "download_detour": "direct"
       },
       {
         "type": "remote",
         "tag": "geosite-geolocation-cn",
         "format": "binary",
         "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-cn.srs",
-        "download_detour": "default"
+        "download_detour": "direct"
       },
       {
         "type": "remote",
@@ -169,28 +178,28 @@
         "tag": "geoip-cn",
         "format": "binary",
         "url": "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
-        "download_detour": "default"
+        "download_detour": "direct"
       },
       {
         "type": "remote",
         "tag": "geosite-category-games@cn",
         "format": "binary",
         "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-games@cn.srs",
-        "download_detour": "default"
+        "download_detour": "direct"
       },
       {
         "type": "remote",
         "tag": "geosite-steam@cn",
         "format": "binary",
         "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-steam@cn.srs",
-        "download_detour": "default"
+        "download_detour": "direct"
       },
       {
         "type": "remote",
         "tag": "geosite-cn",
         "format": "binary",
         "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-cn.srs",
-        "download_detour": "default"
+        "download_detour": "direct"
       },
       {
         "type": "remote",
@@ -211,7 +220,7 @@
       "external_controller": "127.0.0.1:9090",
       "external_ui": "./ui",
       "external_ui_download_url": "https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip",
-      "external_ui_download_detour": "default",
+      "external_ui_download_detour": "direct",
       "default_mode": "Enhanced"
     }
   }
